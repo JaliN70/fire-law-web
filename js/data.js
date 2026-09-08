@@ -8,7 +8,7 @@ const LAW = {
   name: '各類場所消防安全設備設置標準',
   amended: '民國 113 年 04 月 24 日',
   fullUrl: 'https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=D0120029',
-  updated: '2026/08/28',
+  updated: '2026/09/15',
   author: 'AJ',
 };
 
