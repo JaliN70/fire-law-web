@@ -38,6 +38,34 @@
       .replace(/"/g, '&quot;');
   }
 
+  function isPackagedApp() {
+    return location.protocol === 'file:';
+  }
+
+  function externalLinkAttrs() {
+    return isPackagedApp() ? '' : ' target="_blank" rel="noopener"';
+  }
+
+  function openExternal(url) {
+    if (window.Android && typeof Android.openExternal === 'function') {
+      Android.openExternal(url);
+      return;
+    }
+    window.location.href = url;
+  }
+
+  function bindExternalLinks(root) {
+    if (!root) return;
+    root.querySelectorAll('a[href^="http"]').forEach((link) => {
+      link.removeAttribute('target');
+      if (!isPackagedApp()) return;
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        openExternal(link.href);
+      });
+    });
+  }
+
   function renderHome() {
     backBtn.hidden = true;
     pageTitle.textContent = '消防設備法規';
@@ -60,7 +88,7 @@
         <span class="hero-eyebrow">Fire Safety Code</span>
         <h2 class="hero-title">${escapeHtml(LAW.name)}</h2>
         <p class="hero-desc">依設備分類快速查詢法條，內建滅火器與排煙計算工具</p>
-        <a class="hero-cta" href="${LAW.fullUrl}" target="_blank" rel="noopener">
+        <a class="hero-cta" href="${LAW.fullUrl}"${externalLinkAttrs()}>
           完整法規
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
         </a>
@@ -72,6 +100,7 @@
     app.querySelectorAll('.cat-card').forEach((btn) => {
       btn.addEventListener('click', () => navigate(`#/${btn.dataset.cat}`));
     });
+    bindExternalLinks(app);
   }
 
   function renderCategory(catId) {
@@ -94,7 +123,7 @@
       .map(
         (item, i) => `
         <li class="fade-up" style="animation-delay:${i * 0.025}s">
-          <a class="art-btn" href="${mojArticleUrl(item.art)}" target="_blank" rel="noopener"
+          <a class="art-btn" href="${mojArticleUrl(item.art)}"${externalLinkAttrs()}
              data-art="${escapeHtml(item.art)}" data-label="${escapeHtml(item.label)}">
             <span class="art-num">${escapeHtml(formatArticleNum(item.art))}</span>
             <span class="art-label">
@@ -135,6 +164,7 @@
         showToast(`開啟 ${articleDisplayTitle(art)}`);
       });
     });
+    bindExternalLinks(app);
   }
 
   function navigate(hash) {
@@ -160,6 +190,7 @@
   backBtn.addEventListener('click', () => navigate('#/'));
   window.addEventListener('hashchange', route);
   window.addEventListener('popstate', route);
+  bindExternalLinks(document);
 
   route();
 })();
