@@ -41,6 +41,10 @@
       .replace(/"/g, '&quot;');
   }
 
+  function wrapNums(text) {
+    return escapeHtml(text).replace(/(\d+)/g, '<span class="num">$1</span>');
+  }
+
   function isPackagedApp() {
     return location.protocol === 'file:';
   }
@@ -71,7 +75,7 @@
 
   function setStandardChrome() {
     app.classList.remove('compilation-view');
-    lawDateEl.textContent = LAW.amended;
+    lawDateEl.innerHTML = wrapNums(LAW.amended);
     footerNote.innerHTML = '法條內容連結至 <a href="https://law.moj.gov.tw/" target="_blank" rel="noopener">全國法規資料庫</a>，以司法院最新公布為準。';
     bindExternalLinks(document.querySelector('.site-footer'));
   }
@@ -80,7 +84,7 @@
     backBtn.hidden = true;
     setStandardChrome();
     pageTitle.textContent = '消防設備法規';
-    pageSub.textContent = '設置標準 · 108年版彙編';
+    pageSub.innerHTML = '設置標準 · <span class="num">108</span>年版彙編';
     headerMojLink.href = LAW.fullUrl;
     headerMojLink.setAttribute('aria-label', '全國法規資料庫');
 
@@ -88,14 +92,14 @@
       <section class="hero fade-up">
         <span class="hero-eyebrow">Fire Safety Code</span>
         <h2 class="hero-title">消防設備法規</h2>
-        <p class="hero-desc">第一大項為現行設置標準，第二大項為 108 年版消防法令彙編</p>
+        <p class="hero-desc">第一大項為現行設置標準，第二大項為 <span class="num">108</span> 年版消防法令彙編</p>
       </section>
       <ul class="cat-grid hub-grid">
         <li class="fade-up">
           <button type="button" class="cat-card hub-card" data-hub="standard" aria-label="各類場所消防安全設備設置標準">
             <span class="cat-icon" aria-hidden="true">🧯</span>
             <h2 class="cat-title">各類場所消防安全設備設置標準</h2>
-            <p class="cat-sub">${escapeHtml(LAW.amended)}</p>
+            <p class="cat-sub">${wrapNums(LAW.amended)}</p>
             <span class="cat-count">全國法規資料庫 · 設備分類與計算工具</span>
           </button>
         </li>
@@ -103,7 +107,7 @@
           <button type="button" class="cat-card hub-card" data-hub="compilation" aria-label="108年版消防法令彙編">
             <span class="cat-icon" aria-hidden="true">📚</span>
             <h2 class="cat-title"><span class="num">108</span>年版消防法令彙編</h2>
-            <p class="cat-sub">民國 108 年 11 月</p>
+            <p class="cat-sub">民國 <span class="num">108</span> 年 11 月</p>
             <span class="cat-count">消防法、細則、函釋與 PDF 原文</span>
           </button>
         </li>

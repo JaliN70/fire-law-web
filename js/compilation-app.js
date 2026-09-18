@@ -2,7 +2,9 @@
   'use strict';
 
   const PREFIX = 'compilation';
-  const LAWS = FIRE_CODE_COMPILATION_LAWS;
+  const LAWS = (typeof FIRE_CODE_COMPILATION_LAWS !== 'undefined' && Array.isArray(FIRE_CODE_COMPILATION_LAWS))
+    ? FIRE_CODE_COMPILATION_LAWS
+    : [];
   const app = document.getElementById('app');
   const backBtn = document.getElementById('backBtn');
   const pageTitle = document.getElementById('pageTitle');
@@ -24,15 +26,6 @@
       fn(cat, parent);
       walkCats(cat.children, fn, cat);
     }
-  }
-
-  for (const law of LAWS) {
-    walkCats(law.categories, (cat) => {
-      for (const item of cat.articles || []) {
-        if (item.label) item.label = normalizeText(item.label);
-        if (item.body) item.body = normalizeText(item.body);
-      }
-    });
   }
 
   function showToast(msg) {
@@ -350,7 +343,7 @@
 
   function setCompilationChrome() {
     app.classList.add('compilation-view');
-    if (lawDateEl) lawDateEl.textContent = '民國 108 年 11 月';
+    if (lawDateEl) lawDateEl.innerHTML = '民國 <span class="num">108</span> 年 11 月';
     if (footerNote) {
       footerNote.innerHTML = '條文與函釋收錄於 App 內，表格與圖示附說明與截圖，並提供 PDF 詳內文連結。';
     }
@@ -383,7 +376,7 @@
       <section class="hero fade-up">
         <span class="hero-eyebrow">Fire Code Compilation 108</span>
         <h2 class="hero-title"><span class="hero-title-year">108</span>年版消防法令彙編</h2>
-        <p class="hero-desc">${LAWS.length} 部法規 · 共 ${totalArts} 條，選擇法規後依編、章、節查詢</p>
+        <p class="hero-desc">${formatTitleWithNums(`${LAWS.length} 部法規 · 共 ${totalArts} 條，選擇法規後依編、章、節查詢`)}</p>
         <a class="hero-cta" href="assets/fire-code-108.pdf" target="_blank" rel="noopener">
           PDF 原文
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -417,7 +410,7 @@
       <section class="hero fade-up">
         <span class="hero-eyebrow">${escapeHtml(law.shortName)}</span>
         <h2 class="hero-title">${escapeHtml(law.name)}</h2>
-        <p class="hero-desc">${law.categories.length} ${topLevelLabel(law)} · ${totalArts} 條 · ${escapeHtml(law.amended)}</p>
+        <p class="hero-desc">${formatTitleWithNums(`${law.categories.length} ${topLevelLabel(law)} · ${totalArts} 條 · ${law.amended}`)}</p>
         <a class="hero-cta" href="${escapeHtml(law.pdfFile)}" target="_blank" rel="noopener">
           PDF 原文
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>

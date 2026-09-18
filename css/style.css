@@ -321,6 +321,11 @@ body {
   color: var(--text-primary);
   margin: 0 0 0.5rem;
   line-height: 1.25;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0 0.12em;
 }
 
 .hero-desc {
@@ -935,14 +940,21 @@ body {
   font-weight: 600;
 }
 
+.brand-title .brand-title-year,
+.hero-title .hero-title-year,
 .hero-title .num,
 .cat-title .num,
-.brand-title-year,
-.hero-title-year,
+.cat-sub .num,
+.hero-desc .num,
+.brand-sub .num,
+.search-result-title .num,
+.art-detail-title .num,
 .num {
-  font-family: var(--font-body);
+  display: inline-block;
+  font-family: "DM Sans", "Segoe UI", sans-serif;
   font-weight: 700;
-  font-variant-numeric: tabular-nums;
+  font-style: normal;
+  font-variant-numeric: tabular-nums lining-nums;
 }
 
 .brand-title-year {
@@ -953,13 +965,12 @@ body {
 }
 
 .hero-title-year {
-  font-family: var(--font-body);
   font-size: 2.35rem;
   font-weight: 700;
   line-height: 1;
   color: var(--hermes-orange);
   letter-spacing: -0.03em;
-  font-variant-numeric: tabular-nums;
+  transform: translateY(0.06em);
 }
 
 .compilation-view .art-list {
