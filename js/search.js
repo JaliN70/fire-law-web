@@ -48,16 +48,16 @@
     CATEGORIES.forEach((cat) => {
       items.push(makeItem({
         title: cat.title,
-        meta: cat.subtitle,
+        meta: `第一大項 · ${cat.subtitle}`,
         detail: cat.desc,
         extra: cat.title,
         action: 'hash',
-        hash: buildHash([cat.id]),
+        hash: buildHash(['standard', cat.id]),
       }));
       (cat.articles || []).forEach((item) => {
         items.push(makeItem({
           title: `第 ${item.art} 條 · ${item.label}`,
-          meta: cat.title,
+          meta: `第一大項 · ${cat.title}`,
           detail: item.note || '',
           extra: `${item.art} ${cat.subtitle}`,
           action: 'url',
@@ -65,6 +65,69 @@
         }));
       });
     });
+
+    items.push(makeItem({
+      title: '各類場所消防安全設備設置標準',
+      meta: '第一大項',
+      detail: LAW.amended,
+      extra: '設置標準 消防設備',
+      action: 'hash',
+      hash: buildHash(['standard']),
+    }));
+
+    items.push(makeItem({
+      title: '108年版消防法令彙編',
+      meta: '第二大項',
+      detail: '民國 108 年 11 月',
+      extra: '消防法令彙編 PDF',
+      action: 'hash',
+      hash: buildHash(['compilation']),
+    }));
+
+    if (typeof FIRE_CODE_COMPILATION_LAWS !== 'undefined') {
+      FIRE_CODE_COMPILATION_LAWS.forEach((law) => {
+        items.push(makeItem({
+          title: law.shortName,
+          meta: `第二大項 · ${law.name}`,
+          detail: law.amended,
+          extra: law.name,
+          action: 'hash',
+          hash: buildHash(['compilation', law.id]),
+        }));
+
+        (law.categories || []).forEach(function start(cat) {
+          (function visit(node) {
+            items.push(makeItem({
+              title: node.title,
+              meta: `第二大項 · ${law.shortName} · ${node.subtitle}`,
+              detail: node.desc,
+              extra: node.title,
+              action: 'hash',
+              hash: buildHash(['compilation', law.id, node.id]),
+            }));
+
+            (node.articles || []).forEach((item) => {
+              if (item.art === 'pdf' || item.art === 'sec-pdf') return;
+              const title = /^QA-/.test(item.art)
+                ? `函釋 · ${item.label || ''}`
+                : /^\d/.test(item.art)
+                  ? `第 ${item.art} 條 · ${item.label || ''}`
+                  : `${item.art} · ${item.label || ''}`;
+              items.push(makeItem({
+                title,
+                meta: `第二大項 · ${law.shortName} · ${node.title}`,
+                detail: item.body || item.label || '',
+                extra: `${item.art} ${law.name}`,
+                action: 'hash',
+                hash: buildHash(['compilation', law.id, node.id, item.art]),
+              }));
+            });
+
+            (node.children || []).forEach(visit);
+          })(cat);
+        });
+      });
+    }
     return items;
   }
 
